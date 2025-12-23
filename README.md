@@ -5,8 +5,7 @@ A Django-based web application that uses machine learning to automate loan eligi
 
 ![App Screenshot](https://github.com/ansarkp10/AI_Loan_Approval_System/blob/main/Loan_USER_UI.png)
 
-🚀 Quick Start
-bash
+
 # 1. Clone & setup
 git clone https://github.com/ansarkp10/AI_Loan_Approval_System.git
 cd AI_Loan_Approval_System/loan_system
