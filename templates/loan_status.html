@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan Status - AI Loan Approval System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Loan Summary Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>
+                            Loan Application #{{ loan.id }}
+                        </h3>
+                        <div>
+                            {% if loan.status == 'approved' %}
+                                <span class="badge bg-success fs-6">Approved</span>
+                            {% elif loan.status == 'rejected' %}
+                                <span class="badge bg-danger fs-6">Rejected</span>
+                            {% elif loan.status == 'pending' %}
+                                <span class="badge bg-warning fs-6">Pending</span>
+                            {% else %}
+                                <span class="badge bg-info fs-6">Under Review</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Loan Type:</th>
+                                    <td>{{ loan.get_loan_type_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Loan Amount:</th>
+                                    <td>${{ loan.loan_amount }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Tenure:</th>
+                                    <td>{{ loan.tenure_months }} months</td>
+                                </tr>
+                                <tr>
+                                    <th>Interest Rate:</th>
+                                    <td>{{ loan.interest_rate }}%</td>
+                                </tr>
+                                <tr>
+                                    <th>Monthly EMI:</th>
+                                    <td class="fw-bold">${{ emi }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Applied Date:</th>
+                                    <td>{{ loan.applied_date|date:"F d, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Purpose:</th>
+                                    <td>{{ loan.purpose|default:"Not specified" }}</td>
+                                </tr>
+                                {% if loan.reviewed_date %}
+                                <tr>
+                                    <th>Reviewed Date:</th>
+                                    <td>{{ loan.reviewed_date|date:"F d, Y" }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if loan.decision_date %}
+                                <tr>
+                                    <th>Decision Date:</th>
+                                    <td>{{ loan.decision_date|date:"F d, Y" }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Prediction Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-robot me-2"></i>AI Analysis & Prediction</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h5>AI Prediction</h5>
+                                {% if loan.predicted_status == 'Approved' %}
+                                    <div class="display-4 text-success">
+                                        <i class="fas fa-thumbs-up"></i>
+                                    </div>
+                                    <h3 class="text-success">Approved</h3>
+                                {% else %}
+                                    <div class="display-4 text-danger">
+                                        <i class="fas fa-thumbs-down"></i>
+                                    </div>
+                                    <h3 class="text-danger">Rejected</h3>
+                                {% endif %}
+                                <p class="text-muted">ML Model Prediction</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h5>Approval Probability</h5>
+                                {% if loan.approval_probability %}
+                                    <div class="display-4 text-primary">
+                                        {{ loan.approval_probability|floatformat:1 }}%
+                                    </div>
+                                    <div class="progress mt-2" style="height: 20px;">
+                                        <div class="progress-bar" 
+                                             role="progressbar" 
+                                             style="width: {{ loan.approval_probability }}%">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted">Not available</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <div class="mb-3">
+                                <h5>Risk Score</h5>
+                                {% if loan.risk_score %}
+                                    <div class="display-4 {% if loan.risk_score < 30 %}text-success{% elif loan.risk_score < 70 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ loan.risk_score|floatformat:0 }}%
+                                    </div>
+                                    <div class="mt-2">
+                                        {% if loan.risk_score < 30 %}
+                                            <span class="badge bg-success">Low Risk</span>
+                                        {% elif loan.risk_score < 70 %}
+                                            <span class="badge bg-warning">Medium Risk</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">High Risk</span>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted">Not available</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if loan.predicted_status and loan.status %}
+                    <div class="alert {% if loan.predicted_status == 'Approved' and loan.status == 'approved' %}alert-success{% elif loan.predicted_status == 'Rejected' and loan.status == 'rejected' %}alert-success{% else %}alert-warning{% endif %} mt-3">
+                        <h6><i class="fas fa-chart-line me-2"></i>Prediction Accuracy:</h6>
+                        <p class="mb-0">
+                            AI predicted: <strong>{{ loan.predicted_status }}</strong><br>
+                            Final decision: <strong>{{ loan.status|title }}</strong>
+                            {% if loan.predicted_status == 'Approved' and loan.status == 'approved' %}
+                                <br><span class="text-success">✓ AI prediction matches final decision</span>
+                            {% elif loan.predicted_status == 'Rejected' and loan.status == 'rejected' %}
+                                <br><span class="text-success">✓ AI prediction matches final decision</span>
+                            {% else %}
+                                <br><span class="text-warning">⚠ AI prediction differs from final decision</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Applicant Details -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>Applicant Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Age:</th>
+                                    <td>{{ loan.age }} years</td>
+                                </tr>
+                                <tr>
+                                    <th>Marital Status:</th>
+                                    <td>{{ loan.get_marital_status_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Dependents:</th>
+                                    <td>{{ loan.dependents }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Employment Type:</th>
+                                    <td>{{ loan.get_employment_type_display }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Annual Income:</th>
+                                    <td>${{ loan.income }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Employment Years:</th>
+                                    <td>{{ loan.employment_years }} years</td>
+                                </tr>
+                                <tr>
+                                    <th>Credit Score:</th>
+                                    <td>
+                                        {{ loan.credit_score }}
+                                        {% if loan.credit_score >= 750 %}
+                                            <span class="badge bg-success ms-2">Excellent</span>
+                                        {% elif loan.credit_score >= 700 %}
+                                            <span class="badge bg-primary ms-2">Good</span>
+                                        {% elif loan.credit_score >= 650 %}
+                                            <span class="badge bg-warning ms-2">Fair</span>
+                                        {% else %}
+                                            <span class="badge bg-danger ms-2">Poor</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Existing Loans:</th>
+                                    <td>{{ loan.existing_loans }} (${{ loan.existing_loan_amount }})</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Factors -->
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Risk Factor Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h6>Debt-to-Income Ratio</h6>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar {% if loan.debt_to_income_ratio < 0.3 %}bg-success{% elif loan.debt_to_income_ratio < 0.5 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ loan.debt_to_income_ratio|default:0|floatformat:2 }}%">
+                                        {{ loan.debt_to_income_ratio|default:0|floatformat:2 }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {% if loan.debt_to_income_ratio < 0.3 %}
+                                        Low debt burden ✓
+                                    {% elif loan.debt_to_income_ratio < 0.5 %}
+                                        Moderate debt burden ⚠
+                                    {% else %}
+                                        High debt burden ✗
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h6>Loan-to-Value Ratio</h6>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar {% if loan.loan_to_value_ratio < 0.7 %}bg-success{% elif loan.loan_to_value_ratio < 0.85 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ loan.loan_to_value_ratio|default:0|floatformat:2 }}%">
+                                        {{ loan.loan_to_value_ratio|default:0|floatformat:2 }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {% if loan.loan_to_value_ratio < 0.7 %}
+                                        Good collateral coverage ✓
+                                    {% elif loan.loan_to_value_ratio < 0.85 %}
+                                        Moderate coverage ⚠
+                                    {% else %}
+                                        High risk coverage ✗
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Key Factors Considered by AI:</h6>
+                        <ul class="mb-0">
+                            <li>Credit Score and History</li>
+                            <li>Income Stability and Employment Duration</li>
+                            <li>Debt-to-Income Ratio</li>
+                            <li>Loan-to-Value Ratio</li>
+                            <li>Existing Financial Obligations</li>
+                            <li>Applicant's Age and Financial Maturity</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-4 text-center">
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                {% if loan.status == 'approved' %}
+                    <button class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>Download Approval Letter
+                    </button>
+                {% endif %}
+                <a href="{% url 'apply_loan' %}" class="btn btn-primary ms-2">
+                    <i class="fas fa-plus me-2"></i>Apply for New Loan
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

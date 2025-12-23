@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for Loan - AI Loan Approval System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-file-signature me-2"></i>Loan Application Form</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle me-2"></i>Important Information</h5>
+                        <ul class="mb-0">
+                            <li>All fields marked with * are required</li>
+                            <li>Our AI system will analyze your application instantly</li>
+                            <li>You'll receive a risk assessment score and prediction</li>
+                            <li>Approval decision is typically provided within minutes</li>
+                        </ul>
+                    </div>
+
+                    <form method="POST" id="loanForm">
+                        {% csrf_token %}
+                        
+                        <h5 class="mt-4 mb-3">Loan Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.loan_type|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.loan_amount|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.tenure_months|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.purpose|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.age|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.marital_status|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.dependents|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Financial Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.income|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.employment_type|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.employment_years|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.credit_score|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Existing Loans (if any)</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.existing_loans|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.existing_loan_amount|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" required id="declaration">
+                                <label class="form-check-label" for="declaration">
+                                    I hereby declare that all the information provided above is true and correct to the best of my knowledge.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-robot me-2"></i>Submit for AI Analysis
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="calculateEMI()">
+                                <i class="fas fa-calculator me-2"></i>Calculate EMI
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- EMI Calculator -->
+                    <div class="card mt-4" id="emiCalculator" style="display: none;">
+                        <div class="card-header">
+                            <h5 class="mb-0">EMI Calculator</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Loan Amount ($)</label>
+                                        <input type="number" class="form-control" id="calcAmount" value="10000">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Interest Rate (%)</label>
+                                        <input type="number" class="form-control" id="calcRate" value="8.5" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tenure (Months)</label>
+                                        <input type="number" class="form-control" id="calcTenure" value="60">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="calculateEMI()">
+                                Calculate EMI
+                            </button>
+                            <div class="mt-3">
+                                <h5>Estimated Monthly EMI: <span id="emiResult" class="text-primary">$0.00</span></h5>
+                                <p class="text-muted small">Total Interest Payable: <span id="totalInterest">$0.00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-lightbulb me-2"></i>Tips for Better Approval</h5>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-1">Maintain Good Credit Score</h6>
+                                    <p class="small text-muted mb-0">Score above 700 increases approval chances</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-1">Stable Employment</h6>
+                                    <p class="small text-muted mb-0">Minimum 2 years in current job preferred</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-1">Reasonable Loan Amount</h6>
+                                    <p class="small text-muted mb-0">Loan amount should not exceed 50% of annual income</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-1">Low Debt-to-Income Ratio</h6>
+                                    <p class="small text-muted mb-0">Keep ratio below 40% for better chances</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // EMI Calculator Function
+    function calculateEMI() {
+        const calculator = document.getElementById('emiCalculator');
+        calculator.style.display = calculator.style.display === 'none' ? 'block' : 'none';
+        
+        const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
+        const rate = parseFloat(document.getElementById('calcRate').value) || 0;
+        const tenure = parseInt(document.getElementById('calcTenure').value) || 0;
+        
+        if (amount > 0 && rate > 0 && tenure > 0) {
+            const monthlyRate = rate / 12 / 100;
+            const emi = amount * monthlyRate * Math.pow(1 + monthlyRate, tenure) / 
+                        (Math.pow(1 + monthlyRate, tenure) - 1);
+            const totalInterest = (emi * tenure) - amount;
+            
+            document.getElementById('emiResult').textContent = '$' + emi.toFixed(2);
+            document.getElementById('totalInterest').textContent = '$' + totalInterest.toFixed(2);
+        }
+    }
+
+    // Auto-calculate debt-to-income ratio
+    document.getElementById('id_income').addEventListener('input', updateRatios);
+    document.getElementById('id_loan_amount').addEventListener('input', updateRatios);
+    document.getElementById('id_existing_loan_amount').addEventListener('input', updateRatios);
+
+    function updateRatios() {
+        const income = parseFloat(document.getElementById('id_income').value) || 0;
+        const loanAmount = parseFloat(document.getElementById('id_loan_amount').value) || 0;
+        const existingLoan = parseFloat(document.getElementById('id_existing_loan_amount').value) || 0;
+        
+        if (income > 0) {
+            const totalDebt = loanAmount + existingLoan;
+            const dtiRatio = (totalDebt / income) * 100;
+            
+            // Show warning if DTI is too high
+            const dtiElement = document.getElementById('dtiWarning');
+            if (!dtiElement) {
+                const warningDiv = document.createElement('div');
+                warningDiv.id = 'dtiWarning';
+                warningDiv.className = 'alert alert-warning mt-2';
+                document.querySelector('#id_income').parentElement.appendChild(warningDiv);
+            }
+            
+            document.getElementById('dtiWarning').innerHTML = `
+                <strong>Debt-to-Income Ratio:</strong> ${dtiRatio.toFixed(1)}%
+                ${dtiRatio > 40 ? '<br><small class="text-danger">High DTI ratio may affect approval</small>' : 
+                                 '<br><small class="text-success">Good DTI ratio</small>'}
+            `;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

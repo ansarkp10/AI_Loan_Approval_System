@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - AI Loan Approval System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">Intelligent Loan Approval with AI</h1>
+                <p class="lead">Fast, fair, and accurate loan decisions powered by machine learning algorithms. Experience the future of banking.</p>
+                {% if not user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+                </div>
+                {% else %}
+                <div class="mt-4">
+                    <a href="{% url 'apply_loan' %}" class="btn btn-light btn-lg me-3">Apply for Loan</a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg">Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                     alt="AI Banking" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Why Choose Our AI System?</h2>
+            <p class="text-muted">Advanced features for modern banking</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-bolt fa-3x text-primary"></i>
+                        </div>
+                        <h4 class="card-title">Instant Decisions</h4>
+                        <p class="card-text">Get loan approval decisions in seconds using real-time machine learning predictions.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shield-alt fa-3x text-success"></i>
+                        </div>
+                        <h4 class="card-title">Risk Assessment</h4>
+                        <p class="card-text">Advanced algorithms analyze credit risk with 95% accuracy using multiple data points.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-balance-scale fa-3x text-warning"></i>
+                        </div>
+                        <h4 class="card-title">Bias-Free Evaluation</h4>
+                        <p class="card-text">Eliminate human bias with consistent, data-driven decision making.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="text-muted">Simple three-step process</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; margin-bottom: 20px;">
+                        <span class="text-white fw-bold fs-4">1</span>
+                    </div>
+                    <h4>Apply Online</h4>
+                    <p>Fill out our simple application form with your financial details.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; margin-bottom: 20px;">
+                        <span class="text-white fw-bold fs-4">2</span>
+                    </div>
+                    <h4>AI Analysis</h4>
+                    <p>Our ML models analyze your application and predict approval probability.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="rounded-circle bg-warning d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; margin-bottom: 20px;">
+                        <span class="text-white fw-bold fs-4">3</span>
+                    </div>
+                    <h4>Get Decision</h4>
+                    <p>Receive instant decision with detailed risk assessment report.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h2 class="fw-bold text-primary">10,000+</h2>
+                <p>Loans Processed</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="fw-bold text-success">95%</h2>
+                <p>Accuracy Rate</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="fw-bold text-warning">60s</h2>
+                <p>Average Decision Time</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="fw-bold text-info">99%</h2>
+                <p>Customer Satisfaction</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
