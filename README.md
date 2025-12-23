@@ -1,24 +1,55 @@
-🏦 AI Loan Approval System
-📋 Project Overview
-The AI Loan Approval System is a full-stack web application that uses machine learning to automate and optimize the loan application process. It evaluates applicant data in real-time, predicts approval probability, and provides transparent risk analysis for faster, data-driven lending decisions.
+🤖 AI Loan Approval System
+A Django-based web application that uses machine learning to automate loan eligibility predictions in real-time.
 
-Live Demo / Screenshots: [Add link or screenshots here]
+![App Screenshot](https://github.com/ansarkp10/House_Price_Prediction_ML/blob/main/User_UI.png)
 
-✨ Key Features
-🤖 AI-Powered Decision Engine
-Real-time Prediction: Instant loan eligibility assessment using a trained ML model
+🚀 Quick Start
+bash
+# 1. Clone & setup
+git clone https://github.com/ansarkp10/AI_Loan_Approval_System.git
+cd AI_Loan_Approval_System/loan_system
 
-Risk Scoring: Generates comprehensive risk scores (0-100%) for each applicant
+# 2. Install & run
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install django scikit-learn pandas numpy
+python manage.py migrate
+python manage.py runserver
+Visit http://127.0.0.1:8000
 
-Approval Probability: Calculates likelihood of approval with percentage confidence
+✨ Features
+Instant AI Prediction – ML model evaluates applications in real-time
 
-Explainable AI: Highlights key decision factors (DTI ratio, credit score, employment type)
+Risk Scoring – Generates risk scores (0-100%) and approval probabilities
 
-Tech Stack
-Component	Technology
-Backend Framework	Django 4.x
-Frontend	HTML5, CSS3, JavaScript, Bootstrap
-Machine Learning	Scikit-learn, Pandas, NumPy
-Database	SQLite3 (Development)
-Version Control	Git, GitHub
-Deployment	[Specify if deployed]
+Admin Dashboard – Manage applications and override decisions
+
+Transparent Analysis – Shows key factors affecting decisions
+
+🏗️ Tech Stack
+Backend: Django, Python
+
+ML: Scikit-learn, Pandas
+
+Frontend: HTML, CSS, Bootstrap
+
+Database: SQLite
+
+📁 Project Structure
+text
+loan_system/
+├── core/              # Main app (models, views, ML logic)
+├── templates/         # HTML pages
+├── data/              # Training datasets
+└── manage.py          # Django starter
+📌 Key Files
+core/ml_model/train_model.py – ML model training
+
+templates/apply_loan.html – Application form
+
+templates/admin_dashboard.html – Admin panel
+
+🔗 Links
+GitHub: github.com/ansarkp10/AI_Loan_Approval_System
+
+Technologies: Django, Scikit-learn, Bootstrap
