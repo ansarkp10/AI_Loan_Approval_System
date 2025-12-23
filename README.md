@@ -1,7 +1,9 @@
-🤖 AI Loan Approval System
+**🤖 AI Loan Approval System**
+
+
 A Django-based web application that uses machine learning to automate loan eligibility predictions in real-time.
 
-![App Screenshot](https://github.com/ansarkp10/House_Price_Prediction_ML/blob/main/User_UI.png)
+![App Screenshot](https://github.com/ansarkp10/AI_Loan_Approval_System/blob/main/Loan_USER_UI.png)
 
 🚀 Quick Start
 bash
@@ -26,7 +28,9 @@ Admin Dashboard – Manage applications and override decisions
 
 Transparent Analysis – Shows key factors affecting decisions
 
-🏗️ Tech Stack
+**🏗️ Tech Stack**
+
+
 Backend: Django, Python
 
 ML: Scikit-learn, Pandas
@@ -35,21 +39,18 @@ Frontend: HTML, CSS, Bootstrap
 
 Database: SQLite
 
-📁 Project Structure
-text
-loan_system/
-├── core/              # Main app (models, views, ML logic)
-├── templates/         # HTML pages
-├── data/              # Training datasets
-└── manage.py          # Django starter
-📌 Key Files
+**📌 Key Files**
+
+
 core/ml_model/train_model.py – ML model training
 
 templates/apply_loan.html – Application form
 
 templates/admin_dashboard.html – Admin panel
 
-🔗 Links
+**🔗 Links**
+
+
 GitHub: github.com/ansarkp10/AI_Loan_Approval_System
 
 Technologies: Django, Scikit-learn, Bootstrap
